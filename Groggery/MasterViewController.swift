@@ -108,8 +108,8 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
                 return
             }
             
-            detailViewController.client   = self.client
-            detailViewController.business = self.restaurants[indexPath.row]
+            detailViewController.client     = self.client
+            detailViewController.restaurant = self.restaurants[indexPath.row]
         }
     }
     private func configureCell(_ cell: YelpBusinessCollectionViewCell, withBusiness business: YLPBusiness) {        
