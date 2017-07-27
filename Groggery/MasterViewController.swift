@@ -66,8 +66,13 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
         if kind == UICollectionElementKindSectionHeader {
             if let headerView = self.collectionView?.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ResultsReusableView", for: indexPath) as? RestaurantsCollectionSupplementaryView {
                 headerView.resultsLabel.text = groggery.resultsString
+                headerView.resultsLabel.numberOfLines = -1
                 headerView.delegate  = self
                 headerView.sortOrder = self.groggery.sortOrder
+                headerView.sortUpButton.isHidden = self.groggery.restaurants.count == 0 || self.groggery.sortOrder == .down
+                headerView.sortDownButton.isHidden = self.groggery.restaurants.count == 0 || self.groggery.sortOrder == .up
+
+
                 return headerView
             }
         }
@@ -157,7 +162,9 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
                 MBProgressHUD.hide(for: self.view, animated: true)
                 self.searchController.searchBar.text = nil
                 self.collectionView?.reloadData()
-                self.collectionView?.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
+                if self.groggery.restaurants.count > 0 {
+                    self.collectionView?.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
+                }
                 self.searchController.isActive = false
             }
         }) { (error) in
