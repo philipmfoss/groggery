@@ -9,6 +9,13 @@ import SDWebImage
 import MBProgressHUD
 import CRToast
 
+enum State {
+    case signedOut
+    case signingIn
+    case signedIn
+    case loading
+}
+
 class MasterViewController: UICollectionViewController, UISearchBarDelegate {
 
     var detailViewController: DetailViewController? = nil
@@ -19,9 +26,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
     private(set) var searchTerm  = ""
     private(set) var location: LocationUpdater?
     
-    private var loading   = false
-    private var signingIn = false
-    private var signedIn  = false
+    private var state: State = .signedOut
     
     var locationObserverContext: UnsafeMutableRawPointer?
 
@@ -132,19 +137,18 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
     
     private func signin(success: @escaping(()->()), failure:@escaping((Error?)->())) {
         
-        guard signingIn == false, signedIn == false, loading == false else {
+        guard state == .signedOut else {
             return
         }
         
-        signingIn = true
+        state = .signingIn
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
         YLPClient.authorize(success: { (client) in
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
                 self.client = client
-                self.signingIn = false
-                self.signedIn  = true
+                self.state = .signedIn
                 success()
             }
         }) { (error) in
@@ -154,8 +158,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
             print("Error searching app \(error)")
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
-                self.signingIn = false
-                self.signedIn  = false
+                self.state = .signedOut
                 failure(error)
             }
         }
@@ -163,19 +166,19 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
 
     private func refresh(success: @escaping(()->()), failure:@escaping((Error?)->())) {
         
-        guard let location = location?.currentLocation, signedIn, !loading else {
+        guard let location = location?.currentLocation, state == .signedIn else {
             failure(nil)
             return
         }
         
-        loading = true
+        state = .loading
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
         self.client?.searchForRestaurants(term: searchTerm, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, success: { (businesses) in
             self.restaurants = businesses
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
-                self.loading = false
+                self.state = .signedIn
                 success()
             }
         }, failure: { (error) in
@@ -185,7 +188,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
             print("Error searching app \(error)")
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
-                self.loading = false
+                self.state = .signedIn
                 failure(error)
             }
         })
