@@ -11,6 +11,6 @@
 
 #import <YelpAPI/YelpAPI.h>
 #import <CRToast/CRToastConfig.h>
-
+#import <StarRatingView/StarRatingView.h>
 
 #endif /* Groggery_Bridging_Header_h */

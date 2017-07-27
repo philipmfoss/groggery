@@ -10,6 +10,7 @@ target 'Groggery' do
   pod 'SDWebImage'
   pod 'MBProgressHUD'
   pod 'CRToast'
+  pod 'StarRatingView'
 
   target 'GroggeryTests' do
     inherit! :search_paths

@@ -4,20 +4,23 @@ PODS:
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
+  - StarRatingView (1.3.0)
   - YelpAPI (2.0.0)
 
 DEPENDENCIES:
   - CRToast
   - MBProgressHUD
   - SDWebImage
+  - StarRatingView
   - YelpAPI
 
 SPEC CHECKSUMS:
   CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  StarRatingView: 6b6e0e762bbcce3aae8bdbde97dab54342333f7b
   YelpAPI: a0475cf4a7b6f9fe81f1bb7b8a8492770f21e3c7
 
-PODFILE CHECKSUM: 68112c0cc3b76c56c6ec37a3059cd4370cf9e96a
+PODFILE CHECKSUM: cdc46a7905df7436483d63b27679615849a2cac4
 
 COCOAPODS: 1.2.1

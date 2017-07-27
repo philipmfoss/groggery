@@ -34,6 +34,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>StarRatingView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>YelpAPI.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -42,11 +47,6 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>341DF9EF248DBB52C8FC03BA502A1681</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>41FA54D12162DAD51D02FC58A2CD5034</key>
 		<dict>
 			<key>primary</key>
@@ -57,7 +57,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>8F13212BD9832812BC8F1943028963DB</key>
+		<key>75237E638B81F97C24CEBC01941AF625</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7B7A52C364DA11D390902F469A5BFB74</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8CE673B207EBD3EBA54E9320C52E70C0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -72,7 +82,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>ED97DEA16F440F1E633206B468824195</key>
+		<key>E07AF363DECB3F5CF33B4B2FC62D6537</key>
 		<dict>
 			<key>primary</key>
 			<true/>

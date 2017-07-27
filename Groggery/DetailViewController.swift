@@ -6,13 +6,14 @@ import UIKit
 import YelpAPI
 import SDWebImage
 import MBProgressHUD
+import StarRatingView
 
 class DetailViewController: UIViewController {
 
     @IBOutlet weak var heroImageView:          UIImageView!
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     @IBOutlet weak var nameLabel:              UILabel!
-    @IBOutlet weak var ratingSlider:           UISlider!
+    @IBOutlet weak var ratingView:             UIView!
     @IBOutlet weak var reviewsCountLabel:      UILabel!
     @IBOutlet weak var latestReviewLabel:      UILabel!
     @IBOutlet weak var addressLabel:           UILabel!
@@ -44,7 +45,18 @@ class DetailViewController: UIViewController {
         }
         
         nameLabel.text         = restaurant.name
-        ratingSlider.value     = Float(restaurant.rating)
+        
+        let conf = StarRatingViewConfiguration()
+        conf.rateEnabled = true
+        conf.starWidth   = 40
+        conf.fullImage   = "full_star.png"
+        conf.halfImage   = "half_star.png"
+        conf.emptyImage  = "empty_star.png"
+        if let starRatingView = StarRatingView(frame: CGRect(x:0,y:0,width:ratingView.frame.width,height:ratingView.frame.height), configuration: conf) {
+            ratingView.addSubview(starRatingView)
+            starRatingView.rating = CGFloat(restaurant.rating)
+        }
+        
         reviewsCountLabel.text = NSLocalizedString("Based on \(restaurant.reviewCount) reviews", comment: "")
         addressLabel.text      = restaurant.location.address.first
         latestReviewLabel.numberOfLines = -1
