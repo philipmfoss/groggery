@@ -5,6 +5,11 @@
 import Foundation
 import CoreLocation
 
+protocol LocationUpdaterDelegate: class {
+    
+    func locationUpdaterDidNotVerifyLocationServicesEnabled(_ updater: LocationUpdater)
+}
+
 class LocationUpdater : NSObject, CLLocationManagerDelegate {
     
     lazy var locationManager: CLLocationManager = {
@@ -15,15 +20,12 @@ class LocationUpdater : NSObject, CLLocationManagerDelegate {
         return manager
     }()
     
+    weak var delegate: LocationUpdaterDelegate?
+    
     private(set) var started = false
+    
     @objc private(set) dynamic var currentLocation: CLLocation?
-    private(set) var parentViewController: UIViewController
-    
-    init(parentViewController: UIViewController) {
-        self.parentViewController = parentViewController
-        super.init()
-    }
-    
+
     func updateLocation() {
         switch CLLocationManager.authorizationStatus() {
         case .authorizedWhenInUse:
@@ -37,11 +39,7 @@ class LocationUpdater : NSObject, CLLocationManagerDelegate {
     
     private func verifyLocationServicesEnabled() {
         if !CLLocationManager.locationServicesEnabled() {
-            let alert = UIAlertController(title: "Location Settings", message: "This application requires Location settings to be enabled.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Go to Location settings.", style: .default, handler: { (action) in
-                UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
-            }))
-            parentViewController.present(alert, animated: true, completion: nil)
+            delegate?.locationUpdaterDidNotVerifyLocationServicesEnabled(self)
         }
         else {
             start()

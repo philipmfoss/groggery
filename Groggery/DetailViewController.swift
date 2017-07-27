@@ -19,9 +19,15 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var addressLabel:           UILabel!
     @IBOutlet weak var provinceLabel:          UILabel!
    
-    var client:   YLPClient?
+    var client:     Groggery?
     
     private(set) var latestReview: YLPReview?
+
+    var restaurant: YLPBusiness? {
+        didSet {
+            configureView()
+        }
+    }
 
     func configureView() {
         
@@ -61,7 +67,7 @@ class DetailViewController: UIViewController {
         addressLabel.text      = restaurant.location.address.first
         latestReviewLabel.numberOfLines = -1
 
-        loadLatestReview(success: { (review) in
+        client?.loadLatestReviewForRestaurant(restaurant: restaurant, success: { (review) in
             DispatchQueue.main.async {
                 if let review = review {
                     self.latestReviewLabel.text = NSLocalizedString("\"\(review.excerpt)\"", comment: "")
@@ -80,38 +86,6 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    var restaurant: YLPBusiness? {
-        didSet {
-            configureView()
-        }
-    }
-    
-    private func loadLatestReview(success: @escaping((YLPReview?)->()), failure: @escaping((Error?)->())) {
-        guard let client = client, let restaurant = restaurant else {
-            return
-        }
-        
-        client.reviewsForBusiness(withId: restaurant.identifier) { (reviews, error) in
-            if let reviews = reviews {
-                let sortedReviews = reviews.reviews.sorted(by: { (a, b) -> Bool in
-                    return a.timeCreated > b.timeCreated
-                })
-                if sortedReviews.count > 0 {
-                    let latestReview = sortedReviews.first
-                    success(latestReview)
-                    return
-                }
-                
-            }
-            failure(error)
-        }
     }
 }
 

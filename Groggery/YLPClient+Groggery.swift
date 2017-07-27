@@ -33,7 +33,7 @@ extension YLPClient {
     // Searches for the top 10 restaurants based on search term and location
     // Takes the search term and the location as a latitude and longitude
     // Passes back an array of YLPBusiness objects on success
-    func searchForRestaurants(term: String, latitude: Double, longitude: Double, success: @escaping(([YLPBusiness])->()), failure: @escaping((Error?)->())) {
+    func searchForRestaurants(term: String?, latitude: Double, longitude: Double, success: @escaping(([YLPBusiness])->()), failure: @escaping((Error?)->())) {
         
         let coordinates = YLPCoordinate(latitude: latitude, longitude: longitude)
         let query = YLPQuery(coordinate: coordinates)
