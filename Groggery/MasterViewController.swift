@@ -94,12 +94,15 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowBusinessDetail" {
-            guard let detailNavController = segue.destination as? UINavigationController, let detailViewController = detailNavController.topViewController as? DetailViewController, let indexPath = self.collectionView?.indexPathsForSelectedItems?.first else {
+            guard let indexPath = self.collectionView?.indexPathsForSelectedItems?.first else {
                 return
             }
             
-            detailViewController.client     = self.groggery
-            detailViewController.restaurant = groggery.restaurants[indexPath.row]
+            let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+            controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+            controller.navigationItem.leftItemsSupplementBackButton = true
+            controller.client     = self.groggery
+            controller.restaurant = groggery.restaurants[indexPath.row]
         }
     }
     
@@ -150,7 +153,8 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
                 MBProgressHUD.hide(for: self.view, animated: true)
                 self.searchController.searchBar.text = nil
                 self.collectionView?.reloadData()
-                self.collectionView?.contentOffset = CGPoint.zero
+                self.collectionView?.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
+                self.searchController.isActive = false
             }
         }) { (error) in
             DispatchQueue.main.async {
