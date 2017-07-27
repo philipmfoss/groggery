@@ -17,9 +17,20 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
     private(set) var client: YLPClient?
     private(set) var restaurants = [YLPBusiness]()
     private(set) var searchTerm  = ""
+    private(set) var location: LocationUpdater?
     
+    private var loading   = false
+    private var signingIn = false
+    private var signedIn  = false
+    
+    var locationObserverContext: UnsafeMutableRawPointer?
+
     var resultsString: String? {
         if self.client != nil {
+            if location?.currentLocation == nil {
+                return NSLocalizedString("Could not get the current location.", comment: "")
+            }
+            
             if self.searchTerm == "" {
                 if self.restaurants.count > 1 {
                     return NSLocalizedString("Showing all restaurants.", comment: "")
@@ -28,13 +39,12 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
                     return NSLocalizedString("No restaurants found.", comment: "")
                 }
             }
+            
+            if self.restaurants.count > 1 {
+                return NSLocalizedString("Restaurants matching \"\(self.searchTerm)\"", comment: "")
+            }
             else {
-                if self.restaurants.count > 1 {
-                    return NSLocalizedString("Restaurants matching \"\(self.searchTerm)\"", comment: "")
-                }
-                else {
-                    return NSLocalizedString("No restaurants found for search \"\(self.searchTerm)\"", comment: "")
-                }
+                return NSLocalizedString("No restaurants found for search \"\(self.searchTerm)\"", comment: "")
             }
         }
         else {
@@ -47,6 +57,10 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        location = LocationUpdater(parentViewController: self)
+        location?.addObserver(self, forKeyPath: #keyPath(LocationUpdater.currentLocation), options: [.new, .old], context: &locationObserverContext)
+        location?.updateLocation()
+
         addSearch()
         
         if let split = splitViewController {
@@ -54,7 +68,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
 
-        signIn()
+        recursiveSignIn()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -117,11 +131,20 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
     }
     
     private func signin(success: @escaping(()->()), failure:@escaping((Error?)->())) {
+        
+        guard signingIn == false, signedIn == false, loading == false else {
+            return
+        }
+        
+        signingIn = true
+        
         MBProgressHUD.showAdded(to: self.view, animated: true)
         YLPClient.authorize(success: { (client) in
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
                 self.client = client
+                self.signingIn = false
+                self.signedIn  = true
                 success()
             }
         }) { (error) in
@@ -131,17 +154,28 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
             print("Error searching app \(error)")
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
+                self.signingIn = false
+                self.signedIn  = false
                 failure(error)
             }
         }
     }
 
     private func refresh(success: @escaping(()->()), failure:@escaping((Error?)->())) {
+        
+        guard let location = location?.currentLocation, signedIn, !loading else {
+            failure(nil)
+            return
+        }
+        
+        loading = true
+        
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        self.client?.searchForRestaurants(term: "", latitude: 43.7, longitude: -79.4, success: { (businesses) in
+        self.client?.searchForRestaurants(term: searchTerm, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, success: { (businesses) in
             self.restaurants = businesses
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
+                self.loading = false
                 success()
             }
         }, failure: { (error) in
@@ -151,6 +185,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
             print("Error searching app \(error)")
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
+                self.loading = false
                 failure(error)
             }
         })
@@ -177,14 +212,14 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
     // MARK: - Search Results
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        guard let term = searchBar.text else {
+        guard let term = searchBar.text, let location = location?.currentLocation else {
             return
         }
 
         searchTerm = term
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        self.client?.searchForRestaurants(term: term, latitude: 43.7, longitude: -79.4, success: { (businesses) in
+        self.client?.searchForRestaurants(term: term, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, success: { (businesses) in
             self.restaurants = businesses
             DispatchQueue.main.async {
                 MBProgressHUD.hide(for: self.view, animated: true)
@@ -204,7 +239,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
         })
     }
     
-    private func signIn() {
+    private func recursiveSignIn() {
         
         signin(success: {
             self.refresh(success: {
@@ -216,9 +251,17 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate {
         }, failure: { (error) in
             let alert = UIAlertController(title: "Oops", message: "Error Signing in.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { (action) in
-                self.signIn()
+                self.recursiveSignIn()
             }))
             self.present(alert, animated: true, completion: nil)
         })
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "currentLocation" {
+            refresh(success: {
+                self.collectionView?.reloadData()
+            }, failure: { (error) in })
+        }
     }
 }

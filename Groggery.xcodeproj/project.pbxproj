@@ -22,6 +22,7 @@
 		D4AE799F1F26F72300C78309 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4AE799D1F26F72300C78309 /* LaunchScreen.storyboard */; };
 		D4AE79AA1F26F72300C78309 /* GroggeryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AE79A91F26F72300C78309 /* GroggeryTests.swift */; };
 		D4AE79B51F26F72300C78309 /* GroggeryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AE79B41F26F72300C78309 /* GroggeryUITests.swift */; };
+		D4DF9B9C1F2975B5003ADE68 /* LocationUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DF9B9B1F2975B5003ADE68 /* LocationUpdater.swift */; };
 		EBF302C356269131E220120F /* Pods_GroggeryTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5862D3F7DE4CF5FAC9BB4983 /* Pods_GroggeryTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,7 @@
 		D4AE79B01F26F72300C78309 /* GroggeryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GroggeryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4AE79B41F26F72300C78309 /* GroggeryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroggeryUITests.swift; sourceTree = "<group>"; };
 		D4AE79B61F26F72300C78309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D4DF9B9B1F2975B5003ADE68 /* LocationUpdater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationUpdater.swift; sourceTree = "<group>"; };
 		DB5EB447F44F6B03D37E2169 /* Pods-GroggeryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GroggeryTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-GroggeryTests/Pods-GroggeryTests.release.xcconfig"; sourceTree = "<group>"; };
 		DDD2CAD7A566B22C11C4BCF9 /* Pods-GroggeryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GroggeryTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GroggeryTests/Pods-GroggeryTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F0985B7244BB21BE77CA7C5A /* Pods-Groggery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Groggery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Groggery/Pods-Groggery.release.xcconfig"; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 		D4AE798E1F26F72200C78309 /* Groggery */ = {
 			isa = PBXGroup;
 			children = (
+				D4DF9B9B1F2975B5003ADE68 /* LocationUpdater.swift */,
 				D4AE798F1F26F72200C78309 /* AppDelegate.swift */,
 				D4AE79941F26F72200C78309 /* MasterViewController.swift */,
 				D4AC86231F28D02700351823 /* RestaurantsCollectionSupplementaryView.swift */,
@@ -477,6 +480,7 @@
 				D4AC86241F28D02700351823 /* RestaurantsCollectionSupplementaryView.swift in Sources */,
 				D4AC861E1F28AC7000351823 /* YLPClient+Groggery.swift in Sources */,
 				D4AE79971F26F72200C78309 /* DetailViewController.swift in Sources */,
+				D4DF9B9C1F2975B5003ADE68 /* LocationUpdater.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -572,7 +576,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -618,7 +622,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Groggery/Groggery-Bridging-Header.h";
