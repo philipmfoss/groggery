@@ -19,7 +19,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var addressLabel:           UILabel!
     @IBOutlet weak var provinceLabel:          UILabel!
    
-    var client:     Groggery?
+    var client:     GroggeryClient?
     
     private(set) var latestReview: YLPReview?
 

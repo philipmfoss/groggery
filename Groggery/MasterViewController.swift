@@ -14,12 +14,42 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
     
     let searchController = UISearchController(searchResultsController: nil)
     
-    private lazy var groggery: Groggery = {
-        let groggery = Groggery()
+    private lazy var groggery: GroggeryClient = {
+        let groggery = GroggeryClient()
         groggery.locationDelegate = self
         groggery.delegate         = self
         return groggery
     }()
+    
+    var resultsString: String? {
+        if self.groggery.client != nil {
+            if self.groggery.updater.currentLocation == nil {
+                return NSLocalizedString("Could not get the current location.", comment: "")
+            }
+            
+            if let searchTerm = self.groggery.searchTerm {
+                if self.groggery.restaurants.count > 1 {
+                    return NSLocalizedString("Restaurants matching \"\(searchTerm)\"", comment: "")
+                }
+                else {
+                    return NSLocalizedString("No restaurants found for search \"\(searchTerm)\"", comment: "")
+                }
+            }
+            
+            if self.groggery.restaurants.count > 1 {
+                return NSLocalizedString("Showing all restaurants near you.", comment: "")
+            }
+            else {
+                return NSLocalizedString("No restaurants found in your area.", comment: "")
+            }
+            
+        }
+        else {
+            return NSLocalizedString("Signing in...", comment: "")
+        }
+    }
+    
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +95,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionElementKindSectionHeader {
             if let headerView = self.collectionView?.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ResultsReusableView", for: indexPath) as? RestaurantsCollectionSupplementaryView {
-                headerView.resultsLabel.text = groggery.resultsString
+                headerView.resultsLabel.text = self.resultsString
                 headerView.resultsLabel.numberOfLines = -1
                 headerView.delegate  = self
                 headerView.sortOrder = self.groggery.sortOrder
@@ -185,7 +215,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
     }
     
     // MARK: - GroggeryDelegate
-    func groggeryDidUpdateLocation(_ groggery: Groggery) {
+    func groggeryDidUpdateLocation(_ groggery: GroggeryClient) {
         DispatchQueue.main.async {
             self.collectionView?.reloadData()
         }

@@ -6,7 +6,7 @@ import Foundation
 import YelpAPI
 
 protocol GroggeryDelegate: class {
-    func groggeryDidUpdateLocation(_ groggery: Groggery)
+    func groggeryDidUpdateLocation(_ groggery: GroggeryClient)
 }
 
 enum GroggeryState {
@@ -16,7 +16,7 @@ enum GroggeryState {
     case loading
 }
 
-class Groggery: NSObject, LocationUpdaterDelegate {
+class GroggeryClient: NSObject, LocationUpdaterDelegate {
     
     var locationObserverContext: UnsafeMutableRawPointer?
     var sortOrder: SortOrder = .up {
@@ -36,7 +36,6 @@ class Groggery: NSObject, LocationUpdaterDelegate {
     
     private(set) var client:               YLPClient?
     private(set) var searchTerm:           String?
-    private(set) var parentViewController: UIViewController?
     private(set) var restaurants = [YLPBusiness]()
     
     private var state: GroggeryState = .signedOut
@@ -47,34 +46,6 @@ class Groggery: NSObject, LocationUpdaterDelegate {
         return updater
     }()
     
-    
-    var resultsString: String? {
-        if self.client != nil {
-            if updater.currentLocation == nil {
-                return NSLocalizedString("Could not get the current location.", comment: "")
-            }
-            
-            if let searchTerm = self.searchTerm {
-                if self.restaurants.count > 1 {
-                    return NSLocalizedString("Restaurants matching \"\(searchTerm)\"", comment: "")
-                }
-                else {
-                    return NSLocalizedString("No restaurants found for search \"\(searchTerm)\"", comment: "")
-                }
-            }
-
-            if self.restaurants.count > 1 {
-                return NSLocalizedString("Showing all restaurants.", comment: "")
-            }
-            else {
-                return NSLocalizedString("No restaurants found.", comment: "")
-            }
-            
-        }
-        else {
-            return NSLocalizedString("Signing in...", comment: "")
-        }
-    }
     
     override init() {
         let sortOrderSetting = UserDefaults.standard.integer(forKey: "GroggerySortOrder")
