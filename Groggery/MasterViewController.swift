@@ -8,7 +8,7 @@ import SDWebImage
 import MBProgressHUD
 import CRToast
 
-class MasterViewController: UICollectionViewController, UISearchBarDelegate, LocationUpdaterDelegate, GroggeryDelegate {
+class MasterViewController: UICollectionViewController, UISearchBarDelegate, LocationUpdaterDelegate, GroggeryDelegate, RestaurantsCollectionSupplementaryViewDelegate {
 
     var detailViewController: DetailViewController? = nil
     
@@ -29,10 +29,11 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
         
+        self.addSearch()
+
         signIn(success: {
             self.groggery.search(term: nil, success: {
                 DispatchQueue.main.async {
-                    self.addSearch()
                     self.collectionView?.reloadData()
                 }
             }, failure: { (error) in
@@ -64,6 +65,8 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
         if kind == UICollectionElementKindSectionHeader {
             if let headerView = self.collectionView?.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "ResultsReusableView", for: indexPath) as? RestaurantsCollectionSupplementaryView {
                 headerView.resultsLabel.text = groggery.resultsString
+                headerView.delegate  = self
+                headerView.sortOrder = self.groggery.sortOrder
                 return headerView
             }
         }
@@ -178,5 +181,11 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
         DispatchQueue.main.async {
             self.collectionView?.reloadData()
         }
+    }
+    
+    // MARK: - RestaurantsCollectionSupplementaryViewDelegate
+    func restaurantsCollectionSupplementaryView(_ view: RestaurantsCollectionSupplementaryView, didChangeSortOrderTo sortOrder: SortOrder) {
+        self.groggery.sortOrder = sortOrder
+        self.collectionView?.reloadData()
     }
 }

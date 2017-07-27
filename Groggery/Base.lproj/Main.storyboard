@@ -6,6 +6,8 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -189,7 +191,7 @@
                                     <outlet property="addressLabel" destination="QWy-IB-1e9" id="rp3-yd-k7P"/>
                                     <outlet property="imageView" destination="eo6-RT-E3l" id="muL-qP-FvA"/>
                                     <outlet property="nameLabel" destination="K0e-DE-coe" id="bss-oJ-dgy"/>
-                                    <segue destination="vC3-pB-5Vb" kind="show" identifier="ShowBusinessDetail" id="hV0-5o-4YQ"/>
+                                    <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="ShowBusinessDetail" action="showViewController:sender:" id="hV0-5o-4YQ"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -198,21 +200,59 @@
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connecting..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JHY-de-hPN">
-                                    <rect key="frame" x="8" y="8" width="304" height="34"/>
+                                    <rect key="frame" x="8" y="8" width="254" height="34"/>
                                     <color key="backgroundColor" red="0.66260524610000004" green="0.0" blue="0.099088491109999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <nil key="highlightedColor"/>
                                 </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gNS-ZJ-RgW">
+                                    <rect key="frame" x="262" y="14" width="50" height="22"/>
+                                    <color key="backgroundColor" red="0.66260524610000004" green="0.0" blue="0.099088491109999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="50" id="d0Y-Gg-j8E"/>
+                                    </constraints>
+                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <state key="normal" title="Sort ↓">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="sortWithSender:" destination="ZX2-Tg-D67" eventType="touchUpInside" id="9dM-T8-Yzg"/>
+                                    </connections>
+                                </button>
+                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yx7-KM-08v">
+                                    <rect key="frame" x="262" y="14" width="50" height="22"/>
+                                    <color key="backgroundColor" red="0.66260524610000004" green="0.0" blue="0.099088491109999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="50" id="eAH-aO-vb4"/>
+                                    </constraints>
+                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <state key="normal" title="Sort ↑">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="sortWithSender:" destination="ZX2-Tg-D67" eventType="touchUpInside" id="10M-vO-iX4"/>
+                                    </connections>
+                                </button>
                             </subviews>
                             <constraints>
+                                <constraint firstItem="gNS-ZJ-RgW" firstAttribute="top" secondItem="ZX2-Tg-D67" secondAttribute="topMargin" constant="6" id="8gs-WH-2P8"/>
+                                <constraint firstItem="gNS-ZJ-RgW" firstAttribute="centerY" secondItem="JHY-de-hPN" secondAttribute="centerY" id="Dok-Ra-dFK"/>
                                 <constraint firstItem="JHY-de-hPN" firstAttribute="leading" secondItem="ZX2-Tg-D67" secondAttribute="leadingMargin" id="HBz-I8-zjZ"/>
+                                <constraint firstItem="gNS-ZJ-RgW" firstAttribute="baseline" secondItem="yx7-KM-08v" secondAttribute="firstBaseline" id="Q83-pu-QNC"/>
                                 <constraint firstAttribute="bottomMargin" secondItem="JHY-de-hPN" secondAttribute="bottom" id="Tc7-eL-SvT"/>
                                 <constraint firstItem="JHY-de-hPN" firstAttribute="top" secondItem="ZX2-Tg-D67" secondAttribute="topMargin" id="WNL-oZ-RTm"/>
-                                <constraint firstAttribute="trailingMargin" secondItem="JHY-de-hPN" secondAttribute="trailing" id="XWY-se-fft"/>
+                                <constraint firstItem="JHY-de-hPN" firstAttribute="trailing" secondItem="yx7-KM-08v" secondAttribute="leading" id="XLY-ao-lGp"/>
+                                <constraint firstItem="JHY-de-hPN" firstAttribute="trailing" secondItem="gNS-ZJ-RgW" secondAttribute="leading" id="aIM-mH-nID"/>
+                                <constraint firstItem="gNS-ZJ-RgW" firstAttribute="firstBaseline" secondItem="yx7-KM-08v" secondAttribute="baseline" id="cya-3D-xfy"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="gNS-ZJ-RgW" secondAttribute="trailing" id="hOh-Eg-IDl"/>
+                                <constraint firstItem="gNS-ZJ-RgW" firstAttribute="top" secondItem="yx7-KM-08v" secondAttribute="top" id="o0c-zC-MTo"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="yx7-KM-08v" secondAttribute="trailing" id="u0P-mf-LaV"/>
                             </constraints>
                             <connections>
                                 <outlet property="resultsLabel" destination="JHY-de-hPN" id="jsM-65-yxT"/>
+                                <outlet property="sortDownButton" destination="yx7-KM-08v" id="qft-4x-Gvy"/>
+                                <outlet property="sortUpButton" destination="gNS-ZJ-RgW" id="ivi-kU-CLZ"/>
                             </connections>
                         </collectionReusableView>
                         <connections>

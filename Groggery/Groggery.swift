@@ -19,7 +19,18 @@ enum GroggeryState {
 class Groggery: NSObject, LocationUpdaterDelegate {
     
     var locationObserverContext: UnsafeMutableRawPointer?
-    
+    var sortOrder: SortOrder = .up {
+        didSet {
+            switch sortOrder {
+            case .up:
+                UserDefaults.standard.set(0, forKey: "GroggerySortOrder")
+            case .down:
+                UserDefaults.standard.set(1, forKey: "GroggerySortOrder")
+            }
+            self.sort()
+        }
+    }
+
     weak var locationDelegate: LocationUpdaterDelegate?
     weak var delegate:         GroggeryDelegate?
     
@@ -65,6 +76,17 @@ class Groggery: NSObject, LocationUpdaterDelegate {
         }
     }
     
+    override init() {
+        let sortOrderSetting = UserDefaults.standard.integer(forKey: "GroggerySortOrder")
+        switch sortOrderSetting {
+        case 1:
+            sortOrder = .down
+        default:
+            sortOrder = .up
+        }
+        super.init()
+    }
+    
     func signIn(success: @escaping(()->()), failure:@escaping((Error?)->())) {
         updater.updateLocation()
         authorize(success: success, failure: failure)
@@ -83,6 +105,7 @@ class Groggery: NSObject, LocationUpdaterDelegate {
         self.client?.searchForRestaurants(term: term, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude, success: { (businesses) in
             self.state = .signedIn
             self.restaurants = businesses
+            self.sort()
             success()
         }, failure: { (error) in
             guard let error = error else {
@@ -138,6 +161,19 @@ class Groggery: NSObject, LocationUpdaterDelegate {
                 self.state = .signedOut
                 failure(error)
             }
+        }
+    }
+    
+    private func sort() {
+        switch sortOrder {
+        case .up:
+            self.restaurants = self.restaurants.sorted(by: { (a, b) -> Bool in
+                return a.name < b.name
+            })
+        case .down:
+            self.restaurants = self.restaurants.sorted(by: { (a, b) -> Bool in
+                return a.name > b.name
+            })
         }
     }
     

@@ -47,12 +47,10 @@ extension YLPClient {
             else {
                 if let businesses = search?.businesses {
                     print(businesses)
-                    
-                    let businesses = businesses.sorted(by: { (a, b) -> Bool in
-                        return a.name < b.name
-                    })
-                    
                     success(businesses)
+                }
+                else {
+                    failure(nil)
                 }
             }
         })
