@@ -24,8 +24,6 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        addSearch()
-        
         if let split = splitViewController {
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
@@ -34,6 +32,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
         signIn(success: {
             self.groggery.search(term: nil, success: {
                 DispatchQueue.main.async {
+                    self.addSearch()
                     self.collectionView?.reloadData()
                 }
             }, failure: { (error) in
@@ -48,21 +47,6 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
         
     }
     
-    func signIn(success: @escaping(()->()), failure: @escaping((Error?)->())) {
-        MBProgressHUD.showAdded(to: self.view, animated: true)
-        groggery.signIn(success: {
-            MBProgressHUD.hide(for: self.view, animated: true)
-            success()
-        }) { (error) in
-            failure(error)
-            let alert = UIAlertController(title: "Oops", message: "Error Signing in.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { (action) in
-                self.signIn(success: success, failure: failure)
-            }))
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         self.searchController.searchBar.isHidden = false
@@ -118,7 +102,24 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
             detailViewController.restaurant = groggery.restaurants[indexPath.row]
         }
     }
-    private func configureCell(_ cell: YelpBusinessCollectionViewCell, withBusiness business: YLPBusiness) {        
+    
+    // MARK: - Internal
+    private func signIn(success: @escaping(()->()), failure: @escaping((Error?)->())) {
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        groggery.signIn(success: {
+            MBProgressHUD.hide(for: self.view, animated: true)
+            success()
+        }) { (error) in
+            failure(error)
+            let alert = UIAlertController(title: "Oops", message: "Error Signing in.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Try Again", style: .default, handler: { (action) in
+                self.signIn(success: success, failure: failure)
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    private func configureCell(_ cell: YelpBusinessCollectionViewCell, withBusiness business: YLPBusiness) {
         cell.business = business
     }
     
