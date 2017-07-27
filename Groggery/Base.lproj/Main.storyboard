@@ -191,7 +191,7 @@
                                     <outlet property="addressLabel" destination="QWy-IB-1e9" id="rp3-yd-k7P"/>
                                     <outlet property="imageView" destination="eo6-RT-E3l" id="muL-qP-FvA"/>
                                     <outlet property="nameLabel" destination="K0e-DE-coe" id="bss-oJ-dgy"/>
-                                    <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="ShowBusinessDetail" action="showViewController:sender:" id="hV0-5o-4YQ"/>
+                                    <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="ShowBusinessDetail" id="hV0-5o-4YQ"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>

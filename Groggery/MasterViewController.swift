@@ -55,6 +55,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
     }
 
     override func viewDidDisappear(_ animated: Bool) {
+        clearsSelectionOnViewWillAppear = !splitViewController!.isCollapsed
         self.searchController.searchBar.isHidden = true
         super.viewDidDisappear(animated)
     }
@@ -97,7 +98,7 @@ class MasterViewController: UICollectionViewController, UISearchBarDelegate, Loc
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowBusinessDetail" {
-            guard let indexPath = self.collectionView?.indexPathsForSelectedItems?.first else {
+            guard let indexPath = self.collectionView?.indexPathsForSelectedItems?.last else {
                 return
             }
             
